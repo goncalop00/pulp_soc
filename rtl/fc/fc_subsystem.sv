@@ -181,7 +181,18 @@ module fc_subsystem #(
         .fetch_enable_i        ( fetch_en_int      ),
         .core_busy_o           (                   ),
         .ext_perf_counters_i   ( perf_counters_int ),
-        .fregfile_disable_i    ( 1'b0              ) // try me!
+        .fregfile_disable_i    ( 1'b0              ), // try me!
+
+        // FC has no streaming engine attached. Tie stream inputs to
+        // non-blocking constants so accidental stream instructions don't hang.
+        .stream_pop_data_i     ( 32'b0             ),
+        .stream_pop_valid_i    ( 1'b0              ),
+        .stream_push_ready_i   ( 1'b0              ),
+        .stream_pop_req_o      (                   ),
+        .stream_pop_sid_o      (                   ),
+        .stream_push_req_o     (                   ),
+        .stream_push_sid_o     (                   ),
+        .stream_push_data_o    (                   )
     );
     end else begin: FC_CORE
     assign boot_addr = boot_addr_i & 32'hFFFFFF00; // RI5CY expects 0x80 offset, Ibex expects 0x00 offset (adds reset offset 0x80 internally)

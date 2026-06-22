@@ -238,15 +238,24 @@ module pulp_soc import dm::*; #(
     localparam NrHarts                               = 1024;
 
     // this is a constant expression
+    // Use direct bit-indexing, not shifts: (1 << 496) overflows 32-bit and gives 0,
+    // leaving SELECTABLE_HARTS[496]=0 and the DM permanently marking the FC unavailable.
     function logic [NrHarts-1:0] SEL_HARTS_FX();
-        SEL_HARTS_FX = (1 << FC_CORE_MHARTID);
+        SEL_HARTS_FX = '0;
+        SEL_HARTS_FX[FC_CORE_MHARTID] = 1'b1;
         for (int i = 0; i < NB_CORES; i++) begin
-            SEL_HARTS_FX |= (1 << {CL_CORE_CLUSTER_ID, 1'b0, i[3:0]});
+            SEL_HARTS_FX[{CL_CORE_CLUSTER_ID, 1'b0, i[3:0]}] = 1'b1;
         end
     endfunction
 
     // Each hart with hartid=x sets the x'th bit in SELECTABLE_HARTS
     localparam logic [NrHarts-1:0] SELECTABLE_HARTS = SEL_HARTS_FX();
+
+`ifndef SYNTHESIS
+    initial $display("[PULP_SOC] SELECTABLE_HARTS[FC=%0d]=%0b cluster[0]=%0b",
+                     FC_CORE_MHARTID, SELECTABLE_HARTS[FC_CORE_MHARTID],
+                     SELECTABLE_HARTS[0]);
+`endif
 
     // cluster core ids gathere as vector for convenience
     logic [NB_CORES-1:0][10:0] cluster_core_id;
