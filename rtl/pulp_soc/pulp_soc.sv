@@ -251,12 +251,6 @@ module pulp_soc import dm::*; #(
     // Each hart with hartid=x sets the x'th bit in SELECTABLE_HARTS
     localparam logic [NrHarts-1:0] SELECTABLE_HARTS = SEL_HARTS_FX();
 
-`ifndef SYNTHESIS
-    initial $display("[PULP_SOC] SELECTABLE_HARTS[FC=%0d]=%0b cluster[0]=%0b",
-                     FC_CORE_MHARTID, SELECTABLE_HARTS[FC_CORE_MHARTID],
-                     SELECTABLE_HARTS[0]);
-`endif
-
     // cluster core ids gathere as vector for convenience
     logic [NB_CORES-1:0][10:0] cluster_core_id;
     for (genvar i = 0; i < NB_CORES; i++) begin : gen_cluster_core_id
