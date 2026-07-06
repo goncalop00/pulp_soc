@@ -1,34 +1,28 @@
-# Dissertation fork — SoC-level fixes for Streaming Engine bring-up
+# Dissertation fork — SoC-level fixes for SE bring-up (pulp_soc)
 
-A fork of [`pulp-platform/pulp_soc`](https://github.com/pulp-platform/pulp_soc)
-carrying two SoC-level fixes needed for the Streaming Engine evaluation in
-the master's dissertation:
+Fork of [`pulp-platform/pulp_soc`](https://github.com/pulp-platform/pulp_soc)
+with two SoC-level fixes needed for the Streaming Engine evaluation, for the
+MSc dissertation *Configurable Streaming Engine for RISC-V Systems* (Gonçalo
+Pereira, FEUP).
 
-> **Configurable Streaming Engine for RISC-V Systems**
-> Gonçalo Pereira — Faculdade de Engenharia da Universidade do Porto (FEUP)
+## `clusterv2` branch
 
-The upstream `README.md` is preserved alongside this file.
+On top of the upstream `clusterv2` tag:
 
-## The `clusterv2` branch
+- `rtl/fc/fc_subsystem.sv` — ties the Fabric Controller's stream-instruction
+  ports to non-blocking constants (the FC has no SE attached)
+- `rtl/pulp_soc/pulp_soc.sv` — fixes a `SELECTABLE_HARTS` overflow that
+  dropped the FC hart bit, leaving the FC marked unavailable
 
-On top of the upstream `clusterv2` tag, this fork adds:
-
-- `rtl/fc/fc_subsystem.sv` — ties the Fabric Controller's RI5CY
-  stream-instruction ports to non-blocking constants, since the FC has no
-  Streaming Engine attached.
-- `rtl/pulp_soc/pulp_soc.sv` — fixes a `SELECTABLE_HARTS` overflow that was
-  silently dropping the FC hart bit, leaving the FC marked unavailable.
-
-Both fixes are detailed in the dissertation's implementation chapter.
+Both are detailed in the dissertation's implementation chapter.
 
 ## Where it sits
 
 Cloned into `ips/pulp_soc/` by the top-level
 [`pulp_streaming_engine`](https://github.com/goncalop00/pulp_streaming_engine)
-fork through its `ips_list.yml` manifest. The `upstream` Git remote is
-preserved, so `git diff upstream/clusterv2..origin/clusterv2` shows the
-complete delta.
+fork. The `upstream` remote is kept, so
+`git diff upstream/clusterv2..origin/clusterv2` shows the full delta.
 
 ## License
 
-Inherits the Solderpad Hardware License v0.51 from the upstream repository.
+Solderpad Hardware License v0.51 (inherited from upstream).
